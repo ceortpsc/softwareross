@@ -1,0 +1,7 @@
+# CODEOWNERS assigns reviewers for changes
+
+* @your-github-username
+
+# You can add paths and teams, for example:
+# /frontend/ @your-frontend-team
+# /src/main/java/com/bookish/ @your-backend-team
