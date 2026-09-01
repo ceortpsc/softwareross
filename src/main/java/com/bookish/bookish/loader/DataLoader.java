@@ -21,24 +21,37 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Allow rotating admin password via ADMIN_PASSWORD env var. If provided, update existing admin or create one.
+        // Seed or update an admin user using environment secrets: ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_ROLES
+        String adminUser = System.getenv("ADMIN_USERNAME");
+        if (adminUser == null || adminUser.isBlank()) adminUser = "admin";
         String adminPwd = System.getenv("ADMIN_PASSWORD");
+        String adminRolesEnv = System.getenv("ADMIN_ROLES");
+
         if (adminPwd != null && !adminPwd.isBlank()) {
-            var maybe = userRepo.findByUsername("admin");
+            java.util.Set<String> roles;
+            if (adminRolesEnv != null && !adminRolesEnv.isBlank()) {
+                roles = java.util.Arrays.stream(adminRolesEnv.split(","))
+                        .map(String::trim).filter(s->!s.isEmpty()).collect(java.util.stream.Collectors.toSet());
+            } else {
+                roles = Set.of("ROLE_ADMIN","ROLE_MANAGER");
+            }
+
+            var maybe = userRepo.findByUsername(adminUser);
             if (maybe.isPresent()) {
                 User a = maybe.get();
                 a.setPassword(passwordEncoder.encode(adminPwd));
+                a.setRoles(roles);
                 userRepo.save(a);
-                System.out.println("Updated 'admin' password from ADMIN_PASSWORD env var.");
+                System.out.println("Updated '"+adminUser+"' password and roles from ADMIN_* env vars.");
             } else {
-                User admin = new User("admin", passwordEncoder.encode(adminPwd), Set.of("ROLE_ADMIN", "ROLE_MANAGER"));
+                User admin = new User(adminUser, passwordEncoder.encode(adminPwd), roles);
                 userRepo.save(admin);
-                System.out.println("Created admin user from ADMIN_PASSWORD env var.");
+                System.out.println("Created admin user '"+adminUser+"' from ADMIN_* env vars.");
             }
         } else {
-            // If no env var, skip creating default weak admin to force using secrets.
+            // If no ADMIN_PASSWORD provided, do not create a default weak admin; require secret provisioning.
             if (userRepo.findByUsername("admin").isEmpty()) {
-                System.out.println("No ADMIN_PASSWORD set — no default admin created. Please set ADMIN_PASSWORD secret to seed an admin.");
+                System.out.println("No ADMIN_PASSWORD set — no default admin created. Set ADMIN_USERNAME and ADMIN_PASSWORD secrets to seed an admin user.");
             }
         }
     }
