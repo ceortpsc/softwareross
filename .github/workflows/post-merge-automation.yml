@@ -1,0 +1,41 @@
+name: Post-merge Automation (Seed & Optional Upgrade)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+  actions: write
+
+jobs:
+  seed-admin:
+    name: Admin Auto-Seeding
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify required secrets
+        run: |
+          if [ -z "${{ secrets.ADMIN_PASSWORD }}" ]; then echo "ADMIN_PASSWORD missing" >&2; exit 1; fi
+          echo "Secrets present. Proceeding."
+
+      - name: Post-merge note
+        run: echo "Post-merge: deployment should run DataLoader which will seed/update admin using ADMIN_* secrets."
+
+  dependency-upgrade:
+    name: Optional Dependency Upgrade
+    needs: seed-admin
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run dependency upgrade workflow (if enabled)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "If you want automated dependency upgrades, enable .github/workflows/auto-upgrade-deps.yml and ensure this workflow has permissions to create PRs."
