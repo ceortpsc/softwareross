@@ -21,11 +21,25 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create an admin user if none exists
-        if (userRepo.findByUsername("admin").isEmpty()) {
-            User admin = new User("admin", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN", "ROLE_MANAGER"));
-            userRepo.save(admin);
-            System.out.println("Created default admin user: 'admin' with password 'adminpass' (change immediately)");
+        // Allow rotating admin password via ADMIN_PASSWORD env var. If provided, update existing admin or create one.
+        String adminPwd = System.getenv("ADMIN_PASSWORD");
+        if (adminPwd != null && !adminPwd.isBlank()) {
+            var maybe = userRepo.findByUsername("admin");
+            if (maybe.isPresent()) {
+                User a = maybe.get();
+                a.setPassword(passwordEncoder.encode(adminPwd));
+                userRepo.save(a);
+                System.out.println("Updated 'admin' password from ADMIN_PASSWORD env var.");
+            } else {
+                User admin = new User("admin", passwordEncoder.encode(adminPwd), Set.of("ROLE_ADMIN", "ROLE_MANAGER"));
+                userRepo.save(admin);
+                System.out.println("Created admin user from ADMIN_PASSWORD env var.");
+            }
+        } else {
+            // If no env var, skip creating default weak admin to force using secrets.
+            if (userRepo.findByUsername("admin").isEmpty()) {
+                System.out.println("No ADMIN_PASSWORD set — no default admin created. Please set ADMIN_PASSWORD secret to seed an admin.");
+            }
         }
     }
 }
