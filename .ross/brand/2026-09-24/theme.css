@@ -1,0 +1,29 @@
+/* Ross corporate brand integration. Existing licenses remain unchanged. */
+[data-ross-brand='corporate'] {
+  --ross-navy: #0B2D5B;
+  --ross-gold: #D4AF37;
+  --ross-silver: #C0C0C0;
+  --ross-cream: #F8F4E9;
+  --ross-black: #0A0A0A;
+  --ross-display-font: 'Playfair Display', Georgia, serif;
+  --ross-body-font: 'Montserrat', system-ui, sans-serif;
+}
+[data-ross-brand='corporate'] .brand-surface {
+  background: var(--ross-cream);
+  color: var(--ross-navy);
+  font-family: var(--ross-body-font);
+}
+[data-ross-brand='corporate'] .brand-heading {
+  font-family: var(--ross-display-font);
+}
+[data-ross-brand='corporate'] .brand-action {
+  background: var(--ross-navy);
+  color: var(--ross-cream);
+  border: 2px solid var(--ross-gold);
+  border-radius: 8px;
+  padding: 12px 18px;
+}
+[data-ross-brand='corporate'] .brand-action:focus-visible {
+  outline: 3px solid var(--ross-gold);
+  outline-offset: 3px;
+}

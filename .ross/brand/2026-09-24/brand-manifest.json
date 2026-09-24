@@ -1,0 +1,26 @@
+{
+  "release": "2026-09-24.brand.2",
+  "brand": "Ross Tax Pro Software Co.",
+  "tagline": "Tax Solutions. Systems. Career Development.",
+  "repositoryRelationship": "RELATED_CORPORATE_BRAND_REPOSITORY_NOT_NATIVE_DEPLOYMENT_SOURCE",
+  "registeredApplication": "ross-tax-pro-software-co-rt9xvg",
+  "additionalBrandFamilyApplication": "ross-tax-pro-software-co-y8lnqj",
+  "additionalApplicationSourceBindingVerified": false,
+  "logo": {
+    "resourcePath": "public/resources/ross-tax-pro-logo.png",
+    "sha256": "221dc360079cedff0e52f792cf97f7f55e5fb6d1403fc7bcd7e43057fa4db66b",
+    "sourceBoardSha256": "f0106d0babee655bdda6a61ee34617065e143e56a53c8a239ca8231c00b5a77a",
+    "generationId": "e64c9c5e-3f5c-444d-87ca-2989e36f7ec1",
+    "cropPixels": [857, 367, 989, 499],
+    "format": "RASTER_PNG_NOT_VECTOR",
+    "binaryDelivery": "APPDEPLOY_RESOURCES_UPLOAD_REQUIRED"
+  },
+  "palette": {"navy":"#0B2D5B","gold":"#D4AF37","silver":"#C0C0C0","cream":"#F8F4E9","black":"#0A0A0A"},
+  "copyrightRegistrationFiled": false,
+  "trademarkRegistrationFiled": false,
+  "humanAuthorshipVerified": false,
+  "trademarkClearancePerformed": false,
+  "existingLicensesPreserved": true,
+  "fontBinariesIncluded": false,
+  "nativeAppDeployBindingVerified": false
+}
