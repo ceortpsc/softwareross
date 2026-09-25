@@ -1,0 +1,43 @@
+name: PR-CI-Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ci:
+    name: CI Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build backend (Maven)
+        run: mvn -B -DskipTests package
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend deps
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Run basic smoke tests (if any)
+        run: echo "No project tests configured; add test commands to the workflow"
+
+  # Note: cannot perform post-merge actions from a pull_request workflow reliably — use post-merge workflow on push to main.

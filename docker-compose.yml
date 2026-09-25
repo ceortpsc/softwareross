@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bookish
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: .
+    image: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-backend:local
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      JDBC_DATABASE_URL: jdbc:postgresql://db:5432/bookish
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    image: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-frontend:local
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
+    driver: local
